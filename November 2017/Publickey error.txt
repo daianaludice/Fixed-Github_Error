@@ -1,0 +1,233 @@
+
+/* English description is behind Korean. Please ctrl+f and find 'English' */
+
+2017년 11월 17일
+master branch에서 git pull을 시도할시
+--------------------------------
+Permission denied (publickey).
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights and the repository exists.
+--------------------------------
+라는 에러 발생
+
+해결방안을 구글링 하던 중
+
+git push -u origin master 도 했었으나 같은 결과가 나옴.
+git clone git@github.com: daianaludice/Big_Data_Web.git
+도 마찬가지의 결과가 나옴
+
+해결 과정
+
+ssh -vT git@github.com
+=> debug1 이 진행됨
+
+여전히 같은 에러 발생
+
+
+ssh -T git@github.com
+=> Permission denied (publickey) 라는 에러 메세지만 발생
+
+git remote -v
+=> 현재 리모트 확인
+사용 결과
+origin  git@github.com:daianaludice/Big_Data_Web.git (fetch)
+origin  git@github.com:daianaludice/Big_Data_Web.git (push)
+라고 출력
+
+-> 에러 발견
+
+git remote 재설정
+
+git remote set-url origin git://github.com/daianaludice/Big_Data_Web.git
+=> 성공
+
+git pull
+
+=> warning
+
+warning: no common commits
+remote: Counting objects: 6, done.
+remote: Compressing objects: 100% (4/4), done.
+remote: Total 6 (delta 0), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (6/6), done.
+From git://github.com/daianaludice/Big_Data_Web
+ * [new branch]      master     -> origin/master
+There is no tracking information for the current branch.
+Please specify which branch you want to merge with.
+See git-pull(1) for details.
+
+    git pull <remote> <branch>
+
+If you wish to set tracking information for this branch you can do so with:
+
+    git branch --set-upstream-to=origin/<branch> master
+
+출력
+
+git pull origin master
+
+From git://github.com/daianaludice/Big_Data_Web
+ * branch            master     -> FETCH_HEAD
+fatal: refusing to merge unrelated histories
+출력
+
+git branch --set-upstream-to=origin/master master git pull
+=> 에러
+fatal : too many branches to set new upstream
+출력
+
+git branch -u origin/master
+=> 에러
+Branch master set up to track remote branch master from origin.
+출력
+
+git log 로 확인해봄
+HEAD -> master로 변동
+
+$ git pull origin master --allow-unrelated-histories
+=> 성공
+
+From git://github.com/daianaludice/Big_Data_Web
+ * branch            master     -> FETCH_HEAD
+Merge made by the 'recursive' strategy.
+ README.md                                          |  2 +
+ "\354\236\220\353\243\214\354\241\260\354\202\254" | 53 ++++++++++++++++++++++
+ 2 files changed, 55 insertions(+)
+ create mode 100644 README.md
+ create mode 100644 "\354\236\220\353\243\214\354\241\260\354\202\254"
+
+출력
+
+ls 시 올바르게 pull 이 됨을 확인
+
++ 이후 git push 시 warning이 나옴
+
+$ git push
+fatal: remote error:
+  You can't push to git://github.com/daianaludice/Big_Data_Web.git
+  Use https://github.com/daianaludice/Big_Data_Web.git
+
+$ git remote set-url origin https://github.com/daianaludice/Big_Data_Web.git
+=> 성공
+
+$git push
+=> 정상 작동
+
+
+/* English */
+
+November 17, 2017
+When trying to pull git from master branch
+--------------------------------
+Permission denied (publickey).
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights and the repository exists.
+--------------------------------
+Error occurred
+
+While Googleing the solution
+
+git push -u origin master did the same thing.
+git clone git@github.com: daianaludice / Big_Data_Web.git
+The same result is obtained.
+
+Workaround
+
+ssh -vT git@github.com
+=> debug1 is going on
+
+Still the same error
+
+
+ssh -T git@github.com
+=> Only Permission denied (publickey) error message is generated
+
+git remote -v
+=> Check current remote
+Usage Result
+origin git@github.com: daianaludice / Big_Data_Web.git (fetch)
+origin git@github.com: daianaludice / Big_Data_Web.git (push)
+Output
+
+-> Error detected
+
+git remote reset
+
+git remote set-url origin git: //github.com/daianaludice/Big_Data_Web.git
+=> Success
+
+git pull
+
+=> warning
+
+warning: no common commits
+remote: Counting objects: 6, done.
+remote: Compressing objects: 100% (4/4), done.
+remote: Total 6 (delta 0), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (6/6), done.
+From git: //github.com/daianaludice/Big_Data_Web
+?* [new branch] master -> origin / master
+There is no tracking information for the current branch.
+Please specify which branch you want to merge with.
+See git-pull (1) for details.
+
+????git pull <remote> <branch>
+
+If you want to know how to do this,
+
+????git branch --set-upstream-to = origin / <branch> master
+
+Print
+
+git pull origin master
+
+From git: //github.com/daianaludice/Big_Data_Web
+?* branch master -> FETCH_HEAD
+fatal: refusing to merge unrelated histories
+Print
+
+git branch --set-upstream-to = origin / master master git pull
+=> Error
+fatal: too many branches to set new upstream
+Print
+
+git branch -u origin / master
+=> Error
+Branch master set up to remote branch master from origin.
+Print
+
+Check with git log
+Shift to HEAD -> master
+
+$ git pull origin master --allow-unrelated-histories
+=> Success
+
+From git: //github.com/daianaludice/Big_Data_Web
+?* branch master -> FETCH_HEAD
+Merge made by the 'recursive' strategy.
+?README.md | 2 +
+?"\ 354 \ 236 \ 220 \ 353 \ 243 \ 214 \ 354 \ 241 \ 260 \ 354 \ 202 \ 254" | 53 ++++++++++++++++++++++
+?2 files changed, 55 insertions (+)
+?create mode 100644 README.md
+?create mode 100644 "\ 354 \ 236 \ 220 \ 353 \ 243 \ 214 \ 354 \ 241 \ 260 \ 354 \ 202 \ 254"
+
+Print
+
+Check that ls is pulled correctly
+
++ After git push warning
+
+$ git push
+fatal: remote error:
+  You can not push to git: //github.com/daianaludice/Big_Data_Web.git
+  Use https://github.com/daianaludice/Big_Data_Web.git
+
+$ git remote set-url origin https://github.com/daianaludice/Big_Data_Web.git
+=> Success
+
+$ git push
+=> Normal operation
+
+
